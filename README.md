@@ -1,2 +1,2 @@
 # security-writeups
-Documenting my pentesting journey
+Documenting my web application security learning journey.
