@@ -9,7 +9,7 @@ This allows attackers to inject arbitrary SQL syntax that the database executes 
 ![Payload request with category=Gifts' OR 1=1--](images/sqli-lab1-payload-request.png)
 ![Bypassed response showing all products returned](images/sqli-lab1-payload-response.png)
 
-##Injection point —​```
+## Injection point —​ ```
 query = f"SELECT * FROM products WHERE category = '{category}' AND released = 1"
 ​``` was the injection point. I identified it by reasoning about what the server does behind the scenes:
 category is a string filter that gets concatenated: WHERE category = ' + category + '
@@ -24,18 +24,24 @@ OR 1=1 — Adds a condition that's always true. 1=1 evaluates to true, so OR 1=1
 -- — SQL comment delimiter. Everything after -- is ignored by the database, canceling out the trailing AND released = 1 that would otherwise filter results.
 
 ## Impact — On a real site, an attacker could:
-Kill the "bypass authentication," "DROP TABLE," "PCI violation" lines — none of that is demonstrated by this lab. Replace with something like: what you actually proved (full unauthorized read of the product catalog bypassing intended filtering), then one sentence bridging to real-world severity if this pattern existed in a login or admin context — clearly labeled as extrapolation, not this lab's proven impact.
+Gain full unauthorized read of the product catalog bypassing intended filtering.
 
-## Remeditation — Use parameterized queries (prepared statements):
-# Vulnerable (string concatenation):
+## Remediation — Use parameterized queries (prepared statements) instead of string concatenation.:
+
+## Vulnerable (string concatenation):**
+​```python
 query = f"SELECT * FROM products WHERE category = '{category}' AND released = 1"
-
+​```
 # Fixed (parameterized):
+​```
 query = "SELECT * FROM products WHERE category = ? AND released = 1"
 cursor.execute(query, (category,))
+​```
 
-## Severity High — unauthenticated data exposure via direct query manipulation
-Additional defenses:
+## Severity 
+High — unauthenticated data exposure via direct query manipulation
+
+## Additional defenses:
 
 Input validation: Ensure category matches expected patterns (e.g., [a-zA-Z]+)
 
