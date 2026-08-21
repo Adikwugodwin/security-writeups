@@ -4,6 +4,10 @@
 This allows attackers to inject arbitrary SQL syntax that the database executes as part of the original query.
 
 ## Evidence - 
+![Original request showing category=Gifts filter](images/sqli-lab1-original-payload-request.png)
+![Original response showing filtered Gifts category only](images/sqli-lab1-original-payload-response.png)
+![Payload request with category=Gifts' OR 1=1--](images/sqli-lab1-payload-request.png)
+![Bypassed response showing all products returned](images/sqli-lab1-payload-response.png)
 
 ##Injection point —​```
 query = f"SELECT * FROM products WHERE category = '{category}' AND released = 1"
