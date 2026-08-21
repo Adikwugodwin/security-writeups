@@ -4,7 +4,10 @@
 This allows attackers to inject arbitrary SQL syntax that the database executes as part of the original query.
 
 ## Evidence - 
-Injection point —/filter?category=Gifts was the injection point. I identified it by reasoning about what the server does behind the scenes:
+
+##Injection point —​```
+query = f"SELECT * FROM products WHERE category = '{category}' AND released = 1"
+​``` was the injection point. I identified it by reasoning about what the server does behind the scenes:
 category is a string filter that gets concatenated: WHERE category = ' + category + '
 productId is an integer primary key that likely uses parameterized queries or integer validation
 String concatenation on user-controlled input = injection vulnerability; integers with validation = typically safe
@@ -16,14 +19,10 @@ OR 1=1 — Adds a condition that's always true. 1=1 evaluates to true, so OR 1=1
 
 -- — SQL comment delimiter. Everything after -- is ignored by the database, canceling out the trailing AND released = 1 that would otherwise filter results.
 
-Impact — On a real site, an attacker could:
-Read all data: Extract every product, user, order, or sensitive record (OR 1=1 returns everything)
-Bypass authentication: WHERE username = 'admin' OR 1=1 -- logs in as any user
-Extract database schema: Use UNION SELECT to read table names, column names from information_schema
-Modify/delete data: If the app executes multiple queries, inject ; DROP TABLE users;
-Escalate: Access admin panels, steal customer data, PCI violations, credential theft
+## Impact — On a real site, an attacker could:
+Kill the "bypass authentication," "DROP TABLE," "PCI violation" lines — none of that is demonstrated by this lab. Replace with something like: what you actually proved (full unauthorized read of the product catalog bypassing intended filtering), then one sentence bridging to real-world severity if this pattern existed in a login or admin context — clearly labeled as extrapolation, not this lab's proven impact.
 
-Fix — Use parameterized queries (prepared statements):
+## Remeditation — Use parameterized queries (prepared statements):
 # Vulnerable (string concatenation):
 query = f"SELECT * FROM products WHERE category = '{category}' AND released = 1"
 
@@ -31,6 +30,7 @@ query = f"SELECT * FROM products WHERE category = '{category}' AND released = 1"
 query = "SELECT * FROM products WHERE category = ? AND released = 1"
 cursor.execute(query, (category,))
 
+## Severity High — unauthenticated data exposure via direct query manipulation
 Additional defenses:
 
 Input validation: Ensure category matches expected patterns (e.g., [a-zA-Z]+)
