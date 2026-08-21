@@ -1,6 +1,9 @@
-Vulnerability — SQLi. SQL injection vulnerability in WHERE clause allowing retrieval of hidden data. The application directly concatenates the category parameter into a SQL query string without using parameterized queries or proper input sanitization.
+# Lab: SQL Injection — Filter Bypass  https://portswigger.net/web-security/sql-injection/lab-retrieve-hidden-data
+
+## Summary — SQLi. SQL injection vulnerability in WHERE clause allowing retrieval of hidden data. The application directly concatenates the category parameter into a SQL query string without using parameterized queries or proper input sanitization.
 This allows attackers to inject arbitrary SQL syntax that the database executes as part of the original query.
 
+## Evidence - 
 Injection point —/filter?category=Gifts was the injection point. I identified it by reasoning about what the server does behind the scenes:
 category is a string filter that gets concatenated: WHERE category = ' + category + '
 productId is an integer primary key that likely uses parameterized queries or integer validation
