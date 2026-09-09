@@ -43,7 +43,9 @@ query = f"SELECT * FROM products WHERE category = '{category}' AND released = 1"
 - `--` — SQL comment delimiter; everything after it is ignored, canceling the trailing `AND released = 1`
 
 ## Impact
-This confirmed an unauthenticated attacker can read the full product catalog — including unreleased/hidden products — bypassing the intended category filter entirely. In a real-world application, this same concatenation pattern in a query touching authentication or user records could extend to far more severe outcomes (e.g. login bypass, broader data exposure), though that is not what this specific lab demonstrated.
+This vulnerability allowed an unauthenticated attacker to bypass the application's intended category filter and retrieve the full product catalog, including unreleased/hidden products that should not have been visible (rows where `released = 1` was not satisfied). No authentication was required to exploit this — the attacker needed only to modify a single query parameter.
+
+While this specific lab is limited to a product listing endpoint with no sensitive user data in scope, the underlying flaw — unsanitized string concatenation into a SQL query — is not limited to this context. The same pattern, if present in a query touching authentication, session, or user records elsewhere in an application, could extend to credential exposure or authentication bypass. That broader consequence is not demonstrated here; it is a reasonable extrapolation based on the root cause, not a claim about this lab's actual scope.
 
 ## Remediation
 Use parameterized queries (prepared statements) instead of string concatenation.
