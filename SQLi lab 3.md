@@ -34,7 +34,7 @@ query = f"SELECT stock FROM stock WHERE productId = '{productId}' AND storeId = 
 
 - The XML body is parsed server-side and its values concatenated into a SQL query without parameterization
 - `<productId>` was tested first and showed no injectable behavior; `<storeId>` was confirmed as the actual injection point
-- Column count was confirmed via `<storeId>1 UNION SELECT NULL</storeId>` before constructing the final payload — [fill in what the actual response/error was here, and whether one NULL was correct or you needed to add more]
+- Column count was confirmed via `<storeId>1 UNION SELECT NULL</storeId>` before constructing the final payload — Column-count determination: I used a UNION SELECT test to investigate the number of columns returned by the original query. The exact intermediate responses were not retained in my notes, so I have not recorded a definitive column count here.
 
 ## Payload
 Final payload, before encoding:
